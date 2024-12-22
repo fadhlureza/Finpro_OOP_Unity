@@ -89,7 +89,14 @@ public class GameManager : MonoBehaviour
    
     // Use this for initialization
     void Start()
+    
     {
+        
+        if (UIManager.firstLoad)
+        {
+            SoundManager.Instance.PlaySound(SoundManager.Instance.soundtrackMenu);
+        }
+
         GameState = GameState.Prepare;
 
         ScoreManager.Instance.Reset();
@@ -119,9 +126,15 @@ public class GameManager : MonoBehaviour
 	
     // Update is called once per frame
     void Update()
-    {
+    {   
+        if(!gameOver && !UIManager.firstLoad){
+            SoundManager.Instance.PauseMusic();
+        }
+
         if (!gameOver && !UIManager.firstLoad)
         {   
+            
+
          if (Input.GetKey(KeyCode.LeftArrow))
         {
             AddTorque(leftFlipperRigid, torqueForce); // Flipping left
@@ -190,6 +203,9 @@ public class GameManager : MonoBehaviour
     void GameOver()
     {
         GameState = GameState.GameOver;
+        SoundManager.Instance.ResumeMusic();
+
+
     }
 
     void AddTorque(Rigidbody2D rigid, float force)

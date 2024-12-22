@@ -27,6 +27,7 @@ namespace SgLib
         public Sound gameOver;
         public Sound tick;
         public Sound rewarded;
+        public Sound soundtrackMenu;
 
         public delegate void OnMuteStatusChanged(bool isMuted);
 
