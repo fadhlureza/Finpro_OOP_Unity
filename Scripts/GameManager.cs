@@ -121,12 +121,25 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (!gameOver && !UIManager.firstLoad)
+        {   
+         if (Input.GetKey(KeyCode.LeftArrow))
         {
+            AddTorque(leftFlipperRigid, torqueForce); // Flipping left
+            SoundManager.Instance.PlaySound(SoundManager.Instance.flipping);
+        }
+
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            AddTorque(rightFlipperRigid, -torqueForce); // Flipping right
+            SoundManager.Instance.PlaySound(SoundManager.Instance.flipping);
+        }
+
             if (Input.GetMouseButtonDown(0))
             {
                 SoundManager.Instance.PlaySound(SoundManager.Instance.flipping);
                 Vector3 mouseInput = Input.mousePosition;
                 //Flipping right
+
                 if (mouseInput.x >= Screen.width / 2f)
                 {
                     AddTorque(rightFlipperRigid, -torqueForce);
