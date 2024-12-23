@@ -7,7 +7,6 @@ using SgLib;
 public class UIManager : MonoBehaviour
 {
     public static bool firstLoad = true;
-
     public GameManager gameManager;
     public Text score;
     public Text scoreInScoreBg;
@@ -15,9 +14,11 @@ public class UIManager : MonoBehaviour
     public GameObject buttons;
     public Button muteBtn;
     public Button unMuteBtn;
+    public Text pauseText; // Changed to Text component
 
-    Animator scoreAnimator;
-    bool hasCheckedGameOver = false;
+    private Animator scoreAnimator;
+    private bool hasCheckedGameOver = false;
+    private bool isPaused = false;
 
     void OnEnable()
     {
@@ -29,13 +30,12 @@ public class UIManager : MonoBehaviour
         ScoreManager.ScoreUpdated -= OnScoreUpdated;
     }
 
-    // Use this for initialization
     void Start()
     {
         scoreAnimator = score.GetComponent<Animator>();
         score.gameObject.SetActive(false);
         scoreInScoreBg.text = ScoreManager.Instance.Score.ToString();
-            
+        pauseText.gameObject.SetActive(false);
 
         if (!firstLoad)
         {
@@ -43,16 +43,28 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         score.text = ScoreManager.Instance.Score.ToString();
         bestScore.text = ScoreManager.Instance.HighScore.ToString();
         UpdateMuteButtons();
+
         if (gameManager.gameOver && !hasCheckedGameOver)
         {
             hasCheckedGameOver = true;
             Invoke("ShowButtons", 1f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!isPaused)
+            {
+                Pause();
+            }
+            else
+            {
+                Resume();
+            }
         }
     }
 
@@ -81,7 +93,6 @@ public class UIManager : MonoBehaviour
         buttons.SetActive(true);
         score.gameObject.SetActive(false);
         scoreInScoreBg.text = ScoreManager.Instance.Score.ToString();
-
     }
 
     public void HideAllButtons()
@@ -126,5 +137,18 @@ public class UIManager : MonoBehaviour
     {
         SoundManager.Instance.ToggleMute();
     }
-}
 
+    void Pause()
+    {
+        isPaused = true;
+        pauseText.gameObject.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    void Resume()
+    {
+        isPaused = false;
+        pauseText.gameObject.SetActive(false);
+        Time.timeScale = 1f;
+    }
+}
